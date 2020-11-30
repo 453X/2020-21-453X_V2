@@ -1,0 +1,15 @@
+{
+    "py/object": "pros.conductor.templates.external_template.ExternalTemplate",
+    "py/state": {
+        "metadata": {},
+        "name": "autoSelect",
+        "supported_kernels": "^3.2.1",
+        "system_files": [
+            "include\\autoSelect\\selection.h",
+            "firmware\\autoSelect.a"
+        ],
+        "target": "v5",
+        "user_files": [],
+        "version": "2.1.4"
+    }
+}
