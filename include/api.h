@@ -49,6 +49,7 @@
 
 #include "pros/adi.h"
 #include "pros/colors.h"
+#include "pros/distance.h"
 #include "pros/imu.h"
 #include "pros/llemu.h"
 #include "pros/misc.h"
@@ -58,6 +59,7 @@
 
 #ifdef __cplusplus
 #include "pros/adi.hpp"
+#include "pros/distance.hpp"
 #include "pros/imu.hpp"
 #include "pros/llemu.hpp"
 #include "pros/misc.hpp"

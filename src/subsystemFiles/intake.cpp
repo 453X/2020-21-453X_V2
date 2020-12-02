@@ -1,4 +1,5 @@
 #include "main.h"
+
 void intakeControl() {
   bool buttonR1 = controller.get_digital(DIGITAL_R1);
   bool buttonR2 = controller.get_digital(DIGITAL_R2);
@@ -7,8 +8,10 @@ void intakeControl() {
   if (buttonR1) {
     intakeLeft.move_voltage(-12000);
     intakeRight.move_voltage(12000);
-  } else if (buttonR2) {
-     intakeLeft.move_voltage(12000);
+  }
+
+  else if (buttonR2) {
+    intakeLeft.move_voltage(12000);
     intakeRight.move_voltage(-12000);
 
   } else if (buttonY) {
@@ -17,26 +20,40 @@ void intakeControl() {
     rollersTop.move_voltage(12000);
     rollersBottom.move_voltage(-12000);
 
+    pros::delay(10);
+
   } else {
     intakeLeft.move(0);
     intakeRight.move(0);
   }
 }
 
-void intakeHold() {
+void intakeSetHold() {
   intakeLeft.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   intakeRight.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  intakeLeft.move(0);
-  intakeRight.move(0);
+
 }
 
-void intake(){
+void intake() {
   intakeLeft.move_voltage(12000);
   intakeRight.move_voltage(-12000);
   pros::delay(10);
 }
 
-void intakeStop(){
+void intake(int voltage, int units){
+  
+}
+
+void intakeStop() {
   intakeLeft.move_voltage(0);
   intakeRight.move_voltage(0);
+}
+
+void resetIntakeEncoders(){
+  intakeLeft.tare_position();
+  intakeRight.tare_position();
+}
+
+double avgIntakeEncoder(){
+    return (fabs(intakeLeft.get_position()) + fabs(intakeRight.get_position()))/2;
 }

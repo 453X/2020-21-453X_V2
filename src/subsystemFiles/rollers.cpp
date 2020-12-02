@@ -13,25 +13,6 @@ void rollersControl() {
     rollersTop.move_voltage(12000);
     rollersBottom.move_voltage(12000);
 
-  // } else if (buttonY) {
-  //
-  //   if (line1.get_value() < 2850) {
-  //     rollersBottom.move_voltage(-12000);
-  //     intakeLeft.move_voltage(12000);
-  //     intakeRight.move_voltage(-12000);
-  //     rollersTopHold();
-  //   }
-  //   if (line2.get_value() < 2860 && line1.get_value() < 2850) {
-  //     intakeLeft.move_voltage(12000);
-  //     intakeRight.move_voltage(-12000);
-  //     rollersTopHold();
-  //     rollersBottomHold();
-  //   }
-  //   if (line3.get_value() < 2865 && line2.get_value() < 2860 && line1.get_value() < 2850) {
-  //     rollersTopHold();
-  //     rollersBottomHold();
-  //     intakeHold();
-  //   }
   } else {
     rollersTop.move(0);
     rollersBottom.move(0);
@@ -48,47 +29,60 @@ void rollersBottomHold() {
 }
 
 void trackingBalls() {
-  while (true) {
-    bool buttonY = controller.get_digital(DIGITAL_Y);
+  bool buttonY = controller.get_digital(DIGITAL_Y);
+  if (buttonY) {
 
+     rollersTop.move(0);
+    if (line1.get_value() < 2100) { // if ball on top
 
-    if (buttonY) {
-      if (line1.get_value() < 2850) {
-        rollersTop.move_voltage(0);
+      if (line2.get_value() < 2700) { // if ball on bottom
+        rollersBottom.move(0);
+
+      } else { // if ball not on bottom
         rollersBottom.move_voltage(-12000);
-        intakeLeft.move_voltage(12000);
-        intakeRight.move_voltage(-12000);
-
-      } else if (line2.get_value() < 2860 && line1.get_value() < 2850) {
-        rollersTop.move_voltage(0);
-        rollersBottom.move_voltage(0);
-        intakeLeft.move_voltage(12000);
-        intakeRight.move_voltage(-12000);
-
-      } else if (line3.get_value() < 2865 && line2.get_value() < 2860 && line1.get_value() < 2850) {
-        rollersTop.move_voltage(0);
-        rollersBottom.move_voltage(0);
-        intakeLeft.move_voltage(0);
-        intakeRight.move_voltage(0);
-
-      }else {
-        rollersTop.move_voltage(-12000);
-        rollersBottom.move_voltage(-12000);
-        intakeLeft.move_voltage(12000);
-        intakeRight.move_voltage(-12000);
       }
+
+    } else { // if ball not on top
+      rollersBottom.move_voltage(-12000);
     }
+
     pros::delay(10);
   }
 }
 
-void roll(){
+void roll() {
   rollersTop.move_voltage(-12000);
   rollersBottom.move_voltage(-12000);
   pros::delay(10);
 }
 
-void rollersStop(){
+void roll(int voltage) {
+  rollersTop.move_voltage(voltage);
+  rollersBottom.move_voltage(voltage);
+  pros::delay(10);
+}
+
+void roll(int voltage, int units) {
+  resetRollersEncoders();
+  while (avgRollerEncoder() < abs(units)) {
+    rollersTop.move_voltage(voltage);
+    rollersBottom.move_voltage(voltage);
+    pros::delay(10);
+  }
+}
+
+void rollersStop() {
   rollersTop.move_voltage(0);
   rollersBottom.move_voltage(0);
+}
+
+double avgRollerEncoder() {
+  return (fabs(rollersTop.get_position()) +
+          fabs(rollersBottom.get_position())) /
+         2;
+}
+
+void resetRollersEncoders() {
+  rollersTop.tare_position();
+  rollersBottom.tare_position();
 }

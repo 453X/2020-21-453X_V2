@@ -11,6 +11,7 @@
 void initialize() {
   selector::init();
   driveSetCoast();
+  intakeSetHold();
   calibrate();
   resetDriveEncoders();
 }
@@ -46,43 +47,12 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-  calibrate();
+
   if (selector::auton == 1) {
-    pros::lcd::initialize();
-    forward(80, 1800);
-    stop(1);
-    rotateDegrees(225);
-    stop(1);
-    intake();
-    forward(80, 2050);
-    forward(60);
-    delaySeconds(0.7);
-    stop(0.7);
-    intakeStop();
-    roll();
-    delaySeconds(1);
-    rollersStop();
-    stop(0);
-    /*
-    stop(0.5);
-    //turn(50, -1240);
-    rotateDegrees(45);
-    stop(0.5);
-    intake();
-    forward(100, 1950, 45); // problem
-    forward(50);
-    pros::delay(200);
-    stop(0.5);
-    // forward(50, -50);
-    intakeStop();
-    roll();
-    pros::delay(3000);
-    rollersStop();
-    stop(0);
-    forward(50, -1800);
-    stop(0.5);
-    rotateDegrees(315);*/
-  } // selector::auton == 1 : Red Front
+    deploy();
+    // redLeft();
+
+  } // selector ::auton == 1 : Red Front
   if (selector::auton == 2) {
 
   } // selector::auton == 2 : Red Back
@@ -125,6 +95,8 @@ void autonomous() {
 
 void opcontrol() {
   driveSetCoast();
+  intakeSetHold();
+  deploy();
   while (true) {
     if (button.get_new_press()) {
       inertial.reset();
@@ -138,9 +110,7 @@ void opcontrol() {
     driverControl();
     rollersControl();
     intakeControl();
-    // trackingBalls();
-    //  pros::lcd::print(0, "Get rotation- ");
-    // printf("IMU get rotation: %f degrees\n", inertial.get_rotation());
+    trackingBalls();
     pros::delay(20);
   }
 }

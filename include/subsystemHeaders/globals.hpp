@@ -11,6 +11,7 @@ extern pros::Motor driveRF;
 extern pros::Motor driveRB;
 
 extern pros::Imu inertial;
+extern pros::Distance distance;
 extern pros::ADIAnalogIn line1;
 extern pros::ADIAnalogIn line2;
 extern pros::ADIAnalogIn line3;

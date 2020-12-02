@@ -76,6 +76,7 @@ void opcontrol(void);
 #include "subsystemHeaders/drive.hpp"
 #include "subsystemHeaders/intake.hpp"
 #include "subsystemHeaders/rollers.hpp"
+#include "subsystemHeaders/auton.hpp"
 /**
  * You can add C++-only headers here
  */
