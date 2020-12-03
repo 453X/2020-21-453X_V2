@@ -9,11 +9,8 @@
  */
 
 void initialize() {
-  selector::init();
-  driveSetCoast();
+  driveSetHold();
   intakeSetHold();
-  calibrate();
-  resetDriveEncoders();
 }
 
 /**
@@ -33,7 +30,13 @@ void disabled() {}
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-void competition_initialize() {}
+void competition_initialize() {
+  selector::init();
+  resetDriveEncoders();
+  resetIntakeEncoders();
+  resetRollersEncoders();
+  calibrate();
+}
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -50,7 +53,7 @@ void autonomous() {
 
   if (selector::auton == 1) {
     deploy();
-    // redLeft();
+    redLeft();
 
   } // selector ::auton == 1 : Red Front
   if (selector::auton == 2) {
@@ -95,8 +98,7 @@ void autonomous() {
 
 void opcontrol() {
   driveSetCoast();
-  intakeSetHold();
-  deploy();
+  
   while (true) {
     if (button.get_new_press()) {
       inertial.reset();
@@ -110,7 +112,6 @@ void opcontrol() {
     driverControl();
     rollersControl();
     intakeControl();
-    trackingBalls();
     pros::delay(20);
   }
 }

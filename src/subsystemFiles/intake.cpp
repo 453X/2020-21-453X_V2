@@ -14,14 +14,6 @@ void intakeControl() {
     intakeLeft.move_voltage(12000);
     intakeRight.move_voltage(-12000);
 
-  } else if (buttonY) {
-    intakeLeft.move_voltage(12000);
-    intakeRight.move_voltage(-12000);
-    rollersTop.move_voltage(12000);
-    rollersBottom.move_voltage(-12000);
-
-    pros::delay(10);
-
   } else {
     intakeLeft.move(0);
     intakeRight.move(0);
@@ -41,7 +33,7 @@ void intake() {
 }
 
 void intake(int voltage, int units){
-  
+
 }
 
 void intakeStop() {

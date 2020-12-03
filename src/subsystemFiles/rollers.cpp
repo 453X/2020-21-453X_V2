@@ -13,7 +13,29 @@ void rollersControl() {
     rollersTop.move_voltage(12000);
     rollersBottom.move_voltage(12000);
 
-  } else {
+  } else if (buttonY){
+    if (line1.get_value() < 2200) { // if ball on top
+
+     if (line2.get_value() < 2700) { // if ball on bottom and on top
+       rollersTop.move(0);
+       rollersBottom.move(0);
+       intake();
+
+
+     } else { // if ball on top but not on bottom
+       rollersTop.move(0);
+       rollersBottom.move_voltage(-12000);
+       intake();
+     }
+
+   } else { // if ball not on top or bottom
+     roll();
+     intake();
+    }
+
+    pros::delay(10);
+
+  }else {
     rollersTop.move(0);
     rollersBottom.move(0);
   }
@@ -29,25 +51,26 @@ void rollersBottomHold() {
 }
 
 void trackingBalls() {
-  bool buttonY = controller.get_digital(DIGITAL_Y);
-  if (buttonY) {
+  if (line1.get_value() < 2200) { // if ball on top
 
+   if (line2.get_value() < 2700) { // if ball on bottom and on top
      rollersTop.move(0);
-    if (line1.get_value() < 2100) { // if ball on top
+     rollersBottom.move(0);
+     intake();
 
-      if (line2.get_value() < 2700) { // if ball on bottom
-        rollersBottom.move(0);
 
-      } else { // if ball not on bottom
-        rollersBottom.move_voltage(-12000);
-      }
+   } else { // if ball on top but not on bottom
+     rollersTop.move(0);
+     rollersBottom.move_voltage(-12000);
+     intake();
+   }
 
-    } else { // if ball not on top
-      rollersBottom.move_voltage(-12000);
-    }
-
-    pros::delay(10);
+ } else { // if ball not on top or bottom
+   roll();
+   intake();
   }
+
+  pros::delay(10);
 }
 
 void roll() {
