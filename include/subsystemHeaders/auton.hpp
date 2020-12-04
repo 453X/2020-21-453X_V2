@@ -1,5 +1,6 @@
 #include "main.h"
 
 void deploy();
-void redLeft();
+void left();
+void right();
 void skills();

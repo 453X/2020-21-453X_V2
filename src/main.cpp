@@ -52,15 +52,11 @@ void competition_initialize() {
 void autonomous() {
 
   if (selector::auton == 1) {
-    deploy();
-    redLeft();
-
-  } // selector ::auton == 1 : Red Front
+    left();
+  } // selector ::auton == 1 : Red Left
   if (selector::auton == 2) {
-    for(int i = 0; i < 1000; i++){
-      trackingBalls();
-    }
-  } // selector::auton == 2 : Red Back
+    right();
+  } // selector::auton == 2 : Red Right
   if (selector::auton == 3) {
 
   } // selector::auton == 3 : Do Nothing
@@ -69,10 +65,10 @@ void autonomous() {
   } // selector::auton == 4 : Red Custom
   if (selector::auton == -1) {
 
-  } // selector::auton == -1 : Blue Front
+  } // selector::auton == -1 : Blue Left
   if (selector::auton == -2) {
 
-  } // selector::auton == -2 : Blue Back
+  } // selector::auton == -2 : Blue Right
   if (selector::auton == -3) {
 
   } // selector::auton == -3 : Do Nothing
@@ -80,7 +76,8 @@ void autonomous() {
 
   } // selector::auton == -4 : Blue Custom
   if (selector::auton == 0) {
-    skills();
+    deploy();
+    //skills();
   } // selector::auton == 0 : Skills
 }
 
