@@ -55,7 +55,7 @@ void driveSetCoast() {
 }
 
 void rotateDegrees(double deg) {
-  double tolerance = 0.3;
+  double tolerance = 0.5;
   double bias = 0;
   while (true) {
     double heading = inertial.get_heading();
@@ -198,6 +198,81 @@ void forward(int power,
 
     // pros::lcd::print(0, "Get encoder  >> %f\n",
     // fabs(driveLF.get_position()));
+    pros::lcd::print(0, "rotation  >> %5.2f", inertial.get_rotation());
+
+    if (inertial.get_rotation() > rotation + tolerance) {
+      driveLF.move(power - tune);
+      driveLB.move(power - tune);
+      driveRF.move(-power - tune);
+      driveRB.move(-power - tune);
+
+    } else if (inertial.get_rotation() < rotation - tolerance) {
+      driveLF.move(power + tune);
+      driveLB.move(power + tune);
+      driveRF.move(-power + tune);
+      driveRB.move(-power + tune);
+
+    } else {
+      driveLF.move(power);
+      driveLB.move(power);
+      driveRF.move(-power);
+      driveRB.move(-power);
+    }
+
+    pros::delay(10);
+  }
+  stop(0);
+}
+
+void forwardDistance(int power, int mm) {
+  while(distance.get() > mm){
+    forward(power);
+    pros::delay(10);
+  }
+  stop();
+}
+
+void forwardWithRollers(int power, int units){
+  resetDriveEncoders();
+  int direction = abs(units) / units;
+  double rotation = inertial.get_rotation();
+  power *= direction;
+
+  pros::lcd::initialize();
+
+  while (avgDriveEncoders() < abs(units)) {
+    //===============
+    pros::lcd::print(1, "line1  >> %5d", line1.get_value());
+    pros::lcd::print(2, "line2  >> %5d", line2.get_value());
+
+    if (line1.get_value() < 2200) { // if ball on top
+
+      if (line2.get_value() < 2700) { // if ball on bottom and on top
+        rollersTop.move(0);
+        rollersBottom.move(0);
+        intake();
+
+      } else { // if ball on top but not on bottom
+        rollersTop.move(0);
+        rollersBottom.move_voltage(-12000);
+        intake();
+      }
+
+    } else { // if ball not on top or bottom
+      roll();
+      intake();
+
+    }
+
+    //pros::delay(10);
+    //===============
+    int tune = 5;
+    double tolerance = 0.3;
+
+    if (avgDriveEncoders() > abs(units) * 0.7) {
+      power = 50 * direction;
+    }
+
     pros::lcd::print(0, "rotation  >> %5.2f", inertial.get_rotation());
 
     if (inertial.get_rotation() > rotation + tolerance) {

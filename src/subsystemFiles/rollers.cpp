@@ -13,29 +13,28 @@ void rollersControl() {
     rollersTop.move_voltage(12000);
     rollersBottom.move_voltage(12000);
 
-  } else if (buttonY){
+  } else if (buttonY) {
     if (line1.get_value() < 2200) { // if ball on top
 
-     if (line2.get_value() < 2700) { // if ball on bottom and on top
-       rollersTop.move(0);
-       rollersBottom.move(0);
-       intake();
+      if (line2.get_value() < 2700) { // if ball on bottom and on top
+        rollersTop.move(0);
+        rollersBottom.move(0);
+        intake();
 
+      } else { // if ball on top but not on bottom
+        rollersTop.move(0);
+        rollersBottom.move_voltage(-12000);
+        intake();
+      }
 
-     } else { // if ball on top but not on bottom
-       rollersTop.move(0);
-       rollersBottom.move_voltage(-12000);
-       intake();
-     }
-
-   } else { // if ball not on top or bottom
-     roll();
-     intake();
+    } else { // if ball not on top or bottom
+      roll();
+      intake();
     }
 
     pros::delay(10);
 
-  }else {
+  } else {
     rollersTop.move(0);
     rollersBottom.move(0);
   }
@@ -51,23 +50,27 @@ void rollersBottomHold() {
 }
 
 void trackingBalls() {
+  pros::lcd::initialize();
+  pros::lcd::print(0, "line1  >> %5d", line1.get_value());
+  pros::lcd::print(1, "line2  >> %5d", line2.get_value());
+
   if (line1.get_value() < 2200) { // if ball on top
 
-   if (line2.get_value() < 2700) { // if ball on bottom and on top
-     rollersTop.move(0);
-     rollersBottom.move(0);
-     intake();
+    if (line2.get_value() < 2700) { // if ball on bottom and on top
+      rollersTop.move(0);
+      rollersBottom.move(0);
+      intake();
 
+    } else { // if ball on top but not on bottom
+      rollersTop.move(0);
+      rollersBottom.move_voltage(-12000);
+      intake();
+    }
 
-   } else { // if ball on top but not on bottom
-     rollersTop.move(0);
-     rollersBottom.move_voltage(-12000);
-     intake();
-   }
+  } else { // if ball not on top or bottom
+    roll();
+    intake();
 
- } else { // if ball not on top or bottom
-   roll();
-   intake();
   }
 
   pros::delay(10);
@@ -75,6 +78,11 @@ void trackingBalls() {
 
 void roll() {
   rollersTop.move_voltage(-12000);
+  rollersBottom.move_voltage(-12000);
+  pros::delay(10);
+}
+
+void rollBottom(){
   rollersBottom.move_voltage(-12000);
   pros::delay(10);
 }

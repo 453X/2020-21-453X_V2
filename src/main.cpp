@@ -57,7 +57,9 @@ void autonomous() {
 
   } // selector ::auton == 1 : Red Front
   if (selector::auton == 2) {
-
+    for(int i = 0; i < 1000; i++){
+      trackingBalls();
+    }
   } // selector::auton == 2 : Red Back
   if (selector::auton == 3) {
 
@@ -78,7 +80,7 @@ void autonomous() {
 
   } // selector::auton == -4 : Blue Custom
   if (selector::auton == 0) {
-
+    skills();
   } // selector::auton == 0 : Skills
 }
 
@@ -98,7 +100,7 @@ void autonomous() {
 
 void opcontrol() {
   driveSetCoast();
-  
+
   while (true) {
     if (button.get_new_press()) {
       inertial.reset();

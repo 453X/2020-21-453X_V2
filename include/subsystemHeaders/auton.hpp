@@ -2,3 +2,4 @@
 
 void deploy();
 void redLeft();
+void skills();
