@@ -58,7 +58,7 @@ void autonomous() {
     right();
   } // selector::auton == 2 : Red Right
   if (selector::auton == 3) {
-    rotateDegrees(90);
+    rotateDegrees(135);
   } // selector::auton == 3 : Do Nothing
   if (selector::auton == 4) {
 
