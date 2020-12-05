@@ -65,13 +65,13 @@ void autonomous() {
 
   } // selector::auton == 4 : Red Custom
   if (selector::auton == -1) {
-    rotateDegrees(135);
+    left();
   } // selector::auton == -1 : Blue Left
   if (selector::auton == -2) {
-    left();
+    right();
   } // selector::auton == -2 : Blue Right
   if (selector::auton == -3) {
-    right();
+
   } // selector::auton == -3 : Do Nothing
   if (selector::auton == -4) {
     deploy();
@@ -96,7 +96,7 @@ void autonomous() {
 
     // put ball to goal
     roll();
-    delaySeconds(1.5);
+    delaySeconds(1.7);
     rollersStop();
 
     // back off
@@ -104,9 +104,11 @@ void autonomous() {
     rollBottom();
     intake();
     stop(0.2);
+    intakeStop();
+    rollersStop();
   } // selector::auton == -4 : Blue Custom
   if (selector::auton == 0) {
-
+    skills();
   } // selector::auton == 0 : Skills
 }
 
