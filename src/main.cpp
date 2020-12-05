@@ -58,7 +58,7 @@ void autonomous() {
     right();
   } // selector::auton == 2 : Red Right
   if (selector::auton == 3) {
-
+    rotateDegrees(90);
   } // selector::auton == 3 : Do Nothing
   if (selector::auton == 4) {
 
@@ -67,16 +67,17 @@ void autonomous() {
 
   } // selector::auton == -1 : Blue Left
   if (selector::auton == -2) {
-
+    left();
   } // selector::auton == -2 : Blue Right
   if (selector::auton == -3) {
-
+    right();
   } // selector::auton == -3 : Do Nothing
   if (selector::auton == -4) {
 
   } // selector::auton == -4 : Blue Custom
   if (selector::auton == 0) {
-    deploy();
+    //deploy();
+    right();
     //skills();
   } // selector::auton == 0 : Skills
 }
