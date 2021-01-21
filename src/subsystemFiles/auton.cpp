@@ -3,43 +3,23 @@
 void redHomeRow(){
   straft(80, -800);
   stop();
-  delaySeconds(0.3);
-  rotateDegrees(45);
+  rotateDegrees(50);
   stop();
-  intake();
-  delaySeconds(0.1);
-  forward(80, 1000);
-  stop();
-  roll(11000);
-  delaySeconds(0.8);
-  forward(-50);
-  delaySeconds(0.2);
-  forward(50);
-  delaySeconds(0.2);
-  stop();
-  intakeStop();
-  rollersStop();
+  intakePositioning(1000, 0.2, 2, 0.2, 20);
   forward(80, -2000);
+  roll();
   stop();
   delaySeconds(0.2);
   rotateDegrees(90);
-  straft(80, 2400);
+  rollersStop();
+  straft(80, 2500);
   stop();
   delaySeconds(0.1);
-  intake();
-  forward(80, 1500);
-  stop();
-  sort(5);
-  roll();
-  forward(-40);
-  delaySeconds(0.2);
-  forward(40);
-  delaySeconds(0.8);
-  intakeStop();
-  delaySeconds(0.3);
-  rollersStop();
+  forward(80, 900);
+  intakePositioning(100, 0.2, 2, 0.2, 20);
   forward(80, -2000);
   stop();
+  rollersStop();
 
 
 

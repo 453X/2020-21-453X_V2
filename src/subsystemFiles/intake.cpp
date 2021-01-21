@@ -15,8 +15,8 @@ void intakeControl() {
     intakeRight.move_voltage(-12000);
 
   } else {
-    intakeLeft.move(-20);
-    intakeRight.move(-20);
+    intakeLeft.move(-10);
+    intakeRight.move(10);
   }
 }
 
@@ -48,4 +48,18 @@ void resetIntakeEncoders(){
 
 double avgIntakeEncoder(){
     return (fabs(intakeLeft.get_position()) + fabs(intakeRight.get_position()))/2;
+}
+
+void intakePositioning(int units, double seconds, int loop, double rSeconds, int power){
+  intake();
+  forward(100, units);
+  forwardSeconds(100, seconds);
+  forwardSeconds(-50, 0.2);
+  stop();
+  rollMove(loop, rSeconds, power);
+  intakeStop();
+  rollersStop();
+
+
+
 }

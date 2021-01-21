@@ -20,6 +20,7 @@ void forward(int power);
 void forward(int power, int units);
 void forwardDistance(int power, int mm);
 void forwardWithRollers(int power, int units);
+void forwardSeconds(int power, double seconds);
 
 void straft(int power);
 void straft(int power, int units);

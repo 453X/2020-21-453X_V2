@@ -77,10 +77,12 @@ void rotateDegrees(double deg) {
       double pow = 0;
       if (turnRigh == false) {
         // turn A(diff) Left
-        pow = -20 + diff / -2;
+        //pow = -20 + diff / -2;
+          pow = -35 + diff / -2;
       } else {
         // turn B(diff) right
-        pow = 20 + diff / 2;
+        //pow = 20 + diff / 2;
+          pow = 35 + diff / 2;
       }
       turn(pow);
       pros::lcd::print(2, "TURN  >> %5.2f", pow);
@@ -335,4 +337,9 @@ double avgDriveEncoders() {
   return (fabs(driveLF.get_position()) + fabs(driveLB.get_position()) +
           fabs(driveRF.get_position()) + fabs(driveRB.get_position())) /
          4;
+}
+
+void forwardSeconds(int power, double seconds){
+  forward(power);
+  delaySeconds(seconds);
 }

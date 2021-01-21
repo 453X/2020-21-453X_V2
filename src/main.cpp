@@ -7,7 +7,7 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  // selector::init();
+  selector::init();
 }
 
 /**
@@ -15,7 +15,9 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled() {
+  calibrate();
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -59,6 +61,7 @@ void autonomous() {
 
   // selector::auton == 4 : Red Custom
   if (selector::auton == 4) {
+    intakePositioning(800, 0.1, 2, 0.4, 30);
   }
 
   // selector::auton == -1 : Blue Left
@@ -82,7 +85,7 @@ void autonomous() {
     pros::lcd::initialize();
     // sort();
     // rollersStop();
-    calibrate();
+    //calibrate();
     redHomeRow();
   }
 }

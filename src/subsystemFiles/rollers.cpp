@@ -87,6 +87,19 @@ void sort(int units){
   // }
 }
 
+void rollMove(int times, double seconds, int power){
+  roll();
+  for(int i = 0; i < times; i++){
+    forward(-power);
+    delaySeconds(seconds);
+    stop(0.3);
+    forward(power);
+    delaySeconds(seconds);
+  }
+  rollersStop();
+  stop();
+}
+
 void rollersSetCoast() {
   rollersTop.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   rollersBottom.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
