@@ -15,8 +15,8 @@ void intakeControl() {
     intakeRight.move_voltage(-12000);
 
   } else {
-    intakeLeft.move(0);
-    intakeRight.move(0);
+    intakeLeft.move(-20);
+    intakeRight.move(-20);
   }
 }
 

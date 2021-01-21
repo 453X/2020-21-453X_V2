@@ -5,40 +5,93 @@ void rollersControl() {
   bool buttonL2 = controller.get_digital(DIGITAL_L2);
   bool buttonY = controller.get_digital(DIGITAL_Y);
 
-  if (buttonL1) {
-    rollersTop.move_voltage(-12000);
-    rollersBottom.move_voltage(-12000);
+  optical.set_led_pwm(50);
 
-  } else if (buttonL2) {
+
+  if (buttonY) {
     rollersTop.move_voltage(12000);
     rollersBottom.move_voltage(12000);
 
-  } else if (buttonY) {
-    if (line1.get_value() < 2200) { // if ball on top
+  } else if (buttonL2) {
+    rollersTop.move_voltage(-12000);
+    rollersBottom.move_voltage(-12000);
 
-      if (line2.get_value() < 2700) { // if ball on bottom and on top
-        rollersTop.move(0);
-        rollersBottom.move(0);
-        intake();
+  } else if (buttonL1) { //auto sort
+    double hue = optical.get_hue();
 
-      } else { // if ball on top but not on bottom
-        rollersTop.move(0);
-        rollersBottom.move_voltage(-12000);
-        intake();
+    if (selector::auton < 5) {     // red & skills
+      if (hue > 120 && hue < 300) { // blue
+        // poop
+        rollersTop.move_voltage(-12000);
+        rollersBottom.move_voltage(12000);
+      } else { // red
+        // roll
+        rollersTop.move_voltage(12000);
+        rollersBottom.move_voltage(12000);
       }
 
-    } else { // if ball not on top or bottom
-      roll();
-      intake();
-    }
+    } else {
+      if (hue > 300 || hue < 60) { // red
+        // poop
+        rollersTop.move_voltage(-12000);
+        rollersBottom.move_voltage(12000);
 
-    pros::delay(10);
+      } else { // blue
+        // roll
+        rollersTop.move_voltage(12000);
+        rollersBottom.move_voltage(12000);
+      }
+    }
 
   } else {
     rollersTop.move(0);
     rollersBottom.move(0);
   }
 }
+
+
+void sort(int units){
+  optical.set_led_pwm(50);
+
+  for (int i = 0; i < 10000 * units; i++) {
+    double hue = optical.get_hue();
+    pros::lcd::print(2, "hue --> %lf", hue);
+    pros::lcd::print(1, "i --> %d", i);
+
+         // red & skills
+    if (hue > 120 && hue < 300) { // blue
+      // poop
+      rollersTop.move_voltage(-12000);
+      rollersBottom.move_voltage(12000);
+      delaySeconds(1);
+      break;
+
+    } else { // red
+      // roll
+      rollersTop.move_voltage(12000);
+      rollersBottom.move_voltage(12000);
+    }
+
+  }
+  // else {
+  //   if (hue > 300 || hue < 60) { // red
+  //     // poop
+  //     rollersTop.move_voltage(-12000);
+  //     rollersBottom.move_voltage(12000);
+  //
+  //   } else { // blue
+  //     // roll
+  //     rollersTop.move_voltage(12000);
+  //     rollersBottom.move_voltage(12000);
+  //   }
+  // }
+}
+
+void rollersSetCoast() {
+  rollersTop.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  rollersBottom.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+}
+
 void rollersTopHold() {
   rollersTop.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   rollersTop.move(0);
@@ -49,40 +102,13 @@ void rollersBottomHold() {
   rollersBottom.move(0);
 }
 
-void trackingBalls() {
-  pros::lcd::initialize();
-  pros::lcd::print(0, "line1  >> %5d", line1.get_value());
-  pros::lcd::print(1, "line2  >> %5d", line2.get_value());
-
-  if (line1.get_value() < 2200) { // if ball on top
-
-    if (line2.get_value() < 2700) { // if ball on bottom and on top
-      rollersTop.move(0);
-      rollersBottom.move(0);
-      intake();
-
-    } else { // if ball on top but not on bottom
-      rollersTop.move(0);
-      rollersBottom.move_voltage(-12000);
-      intake();
-    }
-
-  } else { // if ball not on top or bottom
-    roll();
-    intake();
-
-  }
-
-  pros::delay(10);
-}
-
 void roll() {
-  rollersTop.move_voltage(-12000);
-  rollersBottom.move_voltage(-12000);
+  rollersTop.move_voltage(12000);
+  rollersBottom.move_voltage(12000);
   pros::delay(10);
 }
 
-void rollBottom(){
+void rollBottom() {
   rollersBottom.move_voltage(-12000);
   pros::delay(10);
 }

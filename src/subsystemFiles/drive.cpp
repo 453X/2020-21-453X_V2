@@ -12,27 +12,6 @@ void driverControl() {
   driveRB.move(-rightJoystickY - rightJoystickX + leftJoystickX);
 }
 
-/**
-  parm:
-  - power : -127 ~ 127
-*/
-void turn(int power) {
-  driveLF.move(power);
-  driveLB.move(power);
-  driveRF.move(power);
-  driveRB.move(power);
-}
-
-void turn(int power, int units) {
-  int direction = abs(units) / units;
-
-  resetDriveEncoders();
-  while (fabs(driveLF.get_position()) < abs(units)) {
-    turn(power * direction);
-    pros::delay(10);
-  }
-}
-
 void driveSetHold() {
   driveLF.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   driveLB.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -59,8 +38,12 @@ void rotateDegrees(double deg) {
   double bias = 0;
   while (true) {
     double heading = inertial.get_heading();
+    if (heading < -360 || heading > 360) {
+      continue;
+    }
     bool turnRigh = false;
     double diff = heading - deg;
+    //double diff = 60;
     if (diff > 0) {
       if (diff > 180) {
         // right
@@ -82,7 +65,14 @@ void rotateDegrees(double deg) {
       }
     }
 
-    diff += bias;
+    // diff += bias;
+    if (turnRigh)
+      pros::lcd::print(3, "diff  >> %5.2f   RIGHT", diff);
+    else
+      pros::lcd::print(3, "diff  >> %5.2f   LEFT", diff);
+
+    pros::lcd::print(4, "tole  >> %5.2f", tolerance);
+
     if (diff > tolerance) {
       double pow = 0;
       if (turnRigh == false) {
@@ -111,6 +101,27 @@ void calibrate() {
   inertial.reset();
   while (inertial.is_calibrating()) {
     pros::delay(20);
+  }
+}
+
+/**
+  parm:
+  - power : -127 ~ 127
+*/
+void turn(int power) {
+  driveLF.move(power);
+  driveLB.move(power);
+  driveRF.move(power);
+  driveRB.move(power);
+}
+
+void turn(int power, int units) {
+  int direction = abs(units) / units;
+
+  resetDriveEncoders();
+  while (fabs(driveLF.get_position()) < abs(units)) {
+    turn(power * direction);
+    pros::delay(10);
   }
 }
 
@@ -232,73 +243,6 @@ void forwardDistance(int power, int mm) {
   stop();
 }
 
-void forwardWithRollers(int power, int units){
-  resetDriveEncoders();
-  int direction = abs(units) / units;
-  double rotation = inertial.get_rotation();
-  power *= direction;
-
-  pros::lcd::initialize();
-
-  while (avgDriveEncoders() < abs(units)) {
-    //===============
-    pros::lcd::print(1, "line1  >> %5d", line1.get_value());
-    pros::lcd::print(2, "line2  >> %5d", line2.get_value());
-
-    if (line1.get_value() < 2200) { // if ball on top
-
-      if (line2.get_value() < 2700) { // if ball on bottom and on top
-        rollersTop.move(0);
-        rollersBottom.move(0);
-        intake();
-
-      } else { // if ball on top but not on bottom
-        rollersTop.move(0);
-        rollersBottom.move_voltage(-12000);
-        intake();
-      }
-
-    } else { // if ball not on top or bottom
-      roll();
-      intake();
-
-    }
-
-    //pros::delay(10);
-    //===============
-    int tune = 5;
-    double tolerance = 0.3;
-
-    if (avgDriveEncoders() > abs(units) * 0.7) {
-      power = 50 * direction;
-    }
-
-    pros::lcd::print(0, "rotation  >> %5.2f", inertial.get_rotation());
-
-    if (inertial.get_rotation() > rotation + tolerance) {
-      driveLF.move(power - tune);
-      driveLB.move(power - tune);
-      driveRF.move(-power - tune);
-      driveRB.move(-power - tune);
-
-    } else if (inertial.get_rotation() < rotation - tolerance) {
-      driveLF.move(power + tune);
-      driveLB.move(power + tune);
-      driveRF.move(-power + tune);
-      driveRB.move(-power + tune);
-
-    } else {
-      driveLF.move(power);
-      driveLB.move(power);
-      driveRF.move(-power);
-      driveRB.move(-power);
-    }
-
-    pros::delay(10);
-  }
-  stop(0);
-}
-
 void straft(int power) {
   driveLF.move(power);
   driveLB.move(-power);
@@ -311,6 +255,12 @@ void straft(int power,
   resetDriveEncoders();
   int direction = abs(units) / units;
   double rotation = inertial.get_rotation();
+  while (true) {
+    if (rotation > -100000 && rotation < 100000) {
+      break;
+    }
+    rotation = inertial.get_rotation();
+  }
   power *= direction;
 
   while (avgDriveEncoders() < abs(units)) {
@@ -323,15 +273,23 @@ void straft(int power,
 
     // pros::lcd::print(0, "Get encoder  >> %f\n",
     // fabs(driveLF.get_position()));
-    pros::lcd::print(0, "rotation  >> %5.2f", inertial.get_rotation());
 
-    if (inertial.get_rotation() > rotation + tolerance) {
+    double currentRotation = inertial.get_rotation();
+    pros::lcd::print(0, "rotation  >> %5.2f", currentRotation);
+    pros::lcd::print(1, "direction  >> %d", direction);
+    pros::lcd::print(2, "power  >> %5.2f", power);
+
+    if (currentRotation < -100000 || currentRotation > 100000) {
+      continue;
+    }
+
+    if (currentRotation > rotation + tolerance) {
       driveLF.move(power - tune);
       driveLB.move(-power - tune);
       driveRF.move(power - tune);
       driveRB.move(-power - tune);
 
-    } else if (inertial.get_rotation() < rotation - tolerance) {
+    } else if (currentRotation < rotation - tolerance) {
       driveLF.move(power + tune);
       driveLB.move(-power + tune);
       driveRF.move(power + tune);

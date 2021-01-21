@@ -72,11 +72,13 @@ void opcontrol(void);
 #endif
 
 #ifdef __cplusplus
+
 #include "subsystemHeaders/globals.hpp"
 #include "subsystemHeaders/drive.hpp"
-#include "subsystemHeaders/intake.hpp"
 #include "subsystemHeaders/rollers.hpp"
+#include "subsystemHeaders/intake.hpp"
 #include "subsystemHeaders/auton.hpp"
+#include "autoSelect/selection.h"
 /**
  * You can add C++-only headers here
  */

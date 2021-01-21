@@ -1,6 +1,8 @@
 #include "main.h"
+
 void rollersControl();
-void trackingBalls();
+void sort(int units);
+void rollersSetCoast();
 void rollersTopHold();
 void rollersBottomHold();
 void roll();
