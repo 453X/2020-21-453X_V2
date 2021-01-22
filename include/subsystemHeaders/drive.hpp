@@ -13,7 +13,7 @@ void turn(int power);
 void turn(int power, int units);
 
 void maneuver(int forward, int straft, int turn);
-void maneuver(int forward, int straft, int turn, int units);
+void maneuver(int forward, int straft, int turn, double seconds);
 void maneuverForward(int forward, int straft, int units);
 
 void forward(int power);

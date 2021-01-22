@@ -1,2 +1,3 @@
 #include "main.h"
-void redHomeRow();
+void rightHomeRow();
+void skills();

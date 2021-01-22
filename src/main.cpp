@@ -29,8 +29,8 @@ void disabled() {
  * starts.
  */
 void competition_initialize() {
-  // pros::lcd::initialize();
-  // calibrate();
+   //pros::lcd::initialize();
+   calibrate();
 }
 
 /**
@@ -47,8 +47,8 @@ void competition_initialize() {
 void autonomous() {
   // selector ::auton == 1 : Red Left
   if (selector::auton == 1) {
-    calibrate();
-    redHomeRow();
+    pros::lcd::initialize();
+    rightHomeRow();
   }
 
   // selector::auton == 2 : Red Right
@@ -61,7 +61,11 @@ void autonomous() {
 
   // selector::auton == 4 : Red Custom
   if (selector::auton == 4) {
-    intakePositioning(800, 0.1, 2, 0.4, 30);
+    pros::lcd::initialize();
+  //  intakePositioning(800, 0.1, 2, 0.4, 30);
+  pros::lcd::print(1, "selector::auton == 4");
+  maneuver(0,-60, 25, 0.9);
+  stop();
   }
 
   // selector::auton == -1 : Blue Left
@@ -82,11 +86,7 @@ void autonomous() {
 
   // selector::auton == 0 : Skills
   if (selector::auton == 0) {
-    pros::lcd::initialize();
-    // sort();
-    // rollersStop();
-    //calibrate();
-    redHomeRow();
+    skills();
   }
 }
 
@@ -106,12 +106,13 @@ void autonomous() {
 void opcontrol() {
   driveSetCoast();
   intakeSetHold();
-
+  long t=0;
   while (true) {
     driverControl();
     rollersControl();
     intakeControl();
     // pros::lcd::print(0, "hue --> %lf", optical.get_hue());
     pros::delay(20);
+
   }
 }

@@ -78,11 +78,19 @@ void rotateDegrees(double deg) {
       if (turnRigh == false) {
         // turn A(diff) Left
         //pow = -20 + diff / -2;
-          pow = -35 + diff / -2;
+          if(diff < 20){
+            pow = -35;
+          } else {
+            pow = -70;
+          }
       } else {
         // turn B(diff) right
         //pow = 20 + diff / 2;
-          pow = 35 + diff / 2;
+        if(diff < 20){
+          pow = 35;
+        } else {
+          pow = 70;
+        }
       }
       turn(pow);
       pros::lcd::print(2, "TURN  >> %5.2f", pow);
@@ -104,6 +112,7 @@ void calibrate() {
   while (inertial.is_calibrating()) {
     pros::delay(20);
   }
+  delaySeconds(0.5);
 }
 
 /**
@@ -134,13 +143,12 @@ void maneuver(int forward, int straft, int turn) {
   driveRB.move(-forward - straft + turn);
 }
 
-void maneuver(int forward, int straft, int turn, int units) {
-  while (avgDriveEncoders() < abs(units)) {
+void maneuver(int forward, int straft, int turn, double seconds) {
     driveLF.move(forward + straft + turn);
     driveLB.move(forward - straft + turn);
     driveRF.move(-forward + straft + turn);
     driveRB.move(-forward - straft + turn);
-  }
+    delaySeconds(seconds);
 }
 
 void maneuverForward(int forward, int straft, int units) {

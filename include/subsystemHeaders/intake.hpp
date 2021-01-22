@@ -3,8 +3,8 @@
 void intakeControl();
 void intakeSetHold();
 void intake();
-void intake(int voltage, int units);
+void outtake();
 void intakeStop();
-void intakePositioning(int units, double seconds, int loop, double rSeconds, int power);
+void intakePositioning(int units, double seconds, double rTotalTime , int loop, double rSeconds, int power) ;
 void resetIntakeEncoders();
 double avgIntakeEncoder();
