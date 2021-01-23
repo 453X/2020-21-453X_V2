@@ -57,8 +57,7 @@ void skills(){
   rotateDegrees(280);
   straft(127);
   delaySeconds(1);
-  straft(80);
-  delaySeconds(0.5);
+  straftSeconds(80, 0.5);
   stop();
   delaySeconds(0.3);
   calibrate();
@@ -89,8 +88,7 @@ void skills(){
   rollersStop();
   rollBottom();
   forward(80, -1000);
-  forward(80);
-  delaySeconds(0.3);
+  forwardSeconds(80, 0.3);
   stop();
   rollersStop();
   forward(90, 1200);
@@ -102,6 +100,15 @@ void skills(){
   forward(90, -2000);
   rotateDegrees(90);
   stop();
+  straft(80, 600);
+  forward(80, -1000);
+  rollBottom();
+  forward(90,-500);
+  rollersStop();
+  rotateDegrees(0);
+  intakePositioning(2300, 0.3, 0.9, 2, 0.3, 20);
+  stop();
+
 
 
 }

@@ -253,11 +253,19 @@ void forwardDistance(int power, int mm) {
   stop();
 }
 
-void straft(int power) {
+void straft(int power) { //left in positive, right in negative
   driveLF.move(power);
   driveLB.move(-power);
   driveRF.move(power);
   driveRB.move(-power);
+}
+
+void straftSeconds(int power, double seconds) { //left in positive, right in negative
+  driveLF.move(power);
+  driveLB.move(-power);
+  driveRF.move(power);
+  driveRB.move(-power);
+  delaySeconds(seconds);
 }
 
 void straft(int power,

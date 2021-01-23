@@ -24,6 +24,7 @@ void forwardSeconds(int power, double seconds);
 
 void straft(int power);
 void straft(int power, int units);
+void straftSeconds(int power, double seconds);
 
 void stop();
 void stop(double seconds);

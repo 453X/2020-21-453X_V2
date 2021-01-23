@@ -86,6 +86,7 @@ void autonomous() {
 
   // selector::auton == 0 : Skills
   if (selector::auton == 0) {
+    intakeSetHold();
     skills();
   }
 }
