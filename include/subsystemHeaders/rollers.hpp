@@ -8,6 +8,7 @@ void rollersBottomHold();
 void roll();
 void roll(int voltage);
 void roll(int voltage, int units);
+void delayRoll();
 void poop();
 void rollBottom();
 void rollersStop();

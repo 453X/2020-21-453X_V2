@@ -16,36 +16,69 @@ void rollersControl() {
     rollersBottom.move_voltage(-12000);
 
   } else if (buttonL1) { // auto sort
-    double hue = optical.get_hue();
+  //   double hue = optical.get_hue();
+  //
+  //   if (selector::auton >= 0) {      // red & skills
+  //     if (hue > 120 && hue < 300) { // blue
+  //       // poop
+  //       rollersTop.move_voltage(-12000);
+  //       rollersBottom.move_voltage(12000);
+  //     } else { // red
+  //       // roll
+  //       rollersTop.move_voltage(12000);
+  //       rollersBottom.move_voltage(12000);
+  //     }
+  //
+  //   } else {
+  //     if (hue > 300 || hue < 60) { // red
+  //       // poop
+  //       rollersTop.move_voltage(-12000);
+  //       rollersBottom.move_voltage(12000);
+  //
+  //     } else { // blue
+  //       // roll
+  //       rollersTop.move_voltage(12000);
+  //       rollersBottom.move_voltage(12000);
+  //     }
+  //   }
+  //
+  // } else {
+  //   rollersTop.move(0);
+  //   rollersBottom.move(0);
+  // }
 
+  double hue = optical.get_hue();
+  bool color = true;
+
+  if(optical.get_proximity() < 100){
     if (selector::auton >= 0) {      // red & skills
       if (hue > 120 && hue < 300) { // blue
-        // poop
-        rollersTop.move_voltage(-12000);
-        rollersBottom.move_voltage(12000);
+        color = false;
       } else { // red
-        // roll
-        rollersTop.move_voltage(12000);
-        rollersBottom.move_voltage(11000);
+        color = true;
       }
 
     } else {
       if (hue > 300 || hue < 60) { // red
-        // poop
-        rollersTop.move_voltage(-12000);
-        rollersBottom.move_voltage(12000);
-
+        color = false;
       } else { // blue
-        // roll
-        rollersTop.move_voltage(12000);
-        rollersBottom.move_voltage(11000);
+        color = true;
       }
     }
-
-  } else {
-    rollersTop.move(0);
-    rollersBottom.move(0);
   }
+
+  if(color){
+    roll();
+  } else {
+    poop();
+  }
+
+
+
+} else {
+  rollersTop.move(0);
+  rollersBottom.move(0);
+}
 }
 
 void sort(int units) {
@@ -208,6 +241,16 @@ void rollTop(){
 void poop(){
   rollersTop.move_voltage(-12000);
   rollersBottom.move_voltage(12000);
+}
+
+void delayRoll(){
+  resetRollersEncoders();
+
+  while(rollersTop.get_position() < 1000){
+    rollTop();
+  }
+
+  roll();
 }
 
 double avgRollerEncoder() {

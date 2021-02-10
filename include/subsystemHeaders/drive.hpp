@@ -8,8 +8,12 @@ void driveSetBrake();
 void driveSetCoast();
 
 void rotateDegrees(double deg);
+void rotateDegreesPD(double deg);
+void turnPID(int setPoint);
+void forwardPD(int units);
+void distancePD(int setPoint);
 
-void turn(int power);
+void turn(double power);
 void turn(int power, int units);
 
 void maneuver(int forward, int straft, int turn);

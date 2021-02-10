@@ -48,7 +48,12 @@ void autonomous() {
   // selector ::auton == 1 : Red Left
   if (selector::auton == 1) {
     pros::lcd::initialize();
-    rightHomeRow();
+    inertial.reset();
+    //forwardPID(2000);
+    forwardPD(800);
+    //rotateDegreesPD(90);
+    delaySeconds(0.3);
+    //rotateDegreesPD(180);
   }
 
   // selector::auton == 2 : Red Right
