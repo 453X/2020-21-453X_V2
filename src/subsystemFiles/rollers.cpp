@@ -4,134 +4,39 @@ void rollersControl() {
   bool buttonL1 = controller.get_digital(DIGITAL_L1);
   bool buttonL2 = controller.get_digital(DIGITAL_L2);
   bool buttonY = controller.get_digital(DIGITAL_Y);
+  bool buttonUp = controller.get_digital(DIGITAL_UP);
+  bool buttonDown = controller.get_digital(DIGITAL_DOWN);
 
   optical.set_led_pwm(50);
 
+  int timer = 0;
   if (buttonY) {
-    rollersTop.move_voltage(12000);
-    rollersBottom.move_voltage(12000);
+
+    // delay roll
+      if (timer >= 300) {
+        roll();
+
+      } else {
+        rollTop();
+        timer += 20;
+        pros::lcd::print(2, "timer --> %lf", timer);
+      }
 
   } else if (buttonL2) {
-    rollersTop.move_voltage(-12000);
-    rollersBottom.move_voltage(-12000);
-
-  } else if (buttonL1) { // auto sort
-  //   double hue = optical.get_hue();
-  //
-  //   if (selector::auton >= 0) {      // red & skills
-  //     if (hue > 120 && hue < 300) { // blue
-  //       // poop
-  //       rollersTop.move_voltage(-12000);
-  //       rollersBottom.move_voltage(12000);
-  //     } else { // red
-  //       // roll
-  //       rollersTop.move_voltage(12000);
-  //       rollersBottom.move_voltage(12000);
-  //     }
-  //
-  //   } else {
-  //     if (hue > 300 || hue < 60) { // red
-  //       // poop
-  //       rollersTop.move_voltage(-12000);
-  //       rollersBottom.move_voltage(12000);
-  //
-  //     } else { // blue
-  //       // roll
-  //       rollersTop.move_voltage(12000);
-  //       rollersBottom.move_voltage(12000);
-  //     }
-  //   }
-  //
-  // } else {
-  //   rollersTop.move(0);
-  //   rollersBottom.move(0);
-  // }
-
-  double hue = optical.get_hue();
-  bool color = true;
-
-  if(optical.get_proximity() < 100){
-    if (selector::auton >= 0) {      // red & skills
-      if (hue > 120 && hue < 300) { // blue
-        color = false;
-      } else { // red
-        color = true;
-      }
-
-    } else {
-      if (hue > 300 || hue < 60) { // red
-        color = false;
-      } else { // blue
-        color = true;
-      }
-    }
-  }
-
-  if(color){
+    roll(-12000);
+  } else if (buttonL1) {
+    rollBottom();
+  } else if (buttonUp) {
     roll();
-  } else {
+  } else if (buttonDown) {
     poop();
+  } else {
+    roll(0);
+    //timer = 0;
   }
-
-
-
-} else {
-  rollersTop.move(0);
-  rollersBottom.move(0);
-}
-}
-
-void sort(int units) {
-  optical.set_led_pwm(50);
-
-  for (int i = 0; i < 10000 * units; i++) {
-    double hue = optical.get_hue();
-    pros::lcd::print(2, "hue --> %lf", hue);
-    pros::lcd::print(1, "i --> %d", i);
-
-    // red & skills
-    if (hue > 120 && hue < 300) { // blue
-      // poop
-      rollersTop.move_voltage(-12000);
-      rollersBottom.move_voltage(12000);
-      delaySeconds(1);
-      break;
-
-    } else { // red
-      // roll
-      rollersTop.move_voltage(12000);
-      rollersBottom.move_voltage(12000);
-    }
-  }
-  // else {
-  //   if (hue > 300 || hue < 60) { // red
-  //     // poop
-  //     rollersTop.move_voltage(-12000);
-  //     rollersBottom.move_voltage(12000);
-  //
-  //   } else { // blue
-  //     // roll
-  //     rollersTop.move_voltage(12000);
-  //     rollersBottom.move_voltage(12000);
-  //   }
-  // }
-}
-
-void rollMove(int times, double seconds, int power) {
-  roll();
-  for (int i = 0; i < times; i++) {
-    forward(-power);
-    delaySeconds(seconds);
-    stop(0.3);
-    forward(power);
-    delaySeconds(seconds);
-  }
-  rollersStop();
-  stop();
 }
 
 void rollMove2(int times, double totalSeconds, double fbSeconds, int power) {
-
   optical.set_led_pwm(50);
   double timer = 0;
 
@@ -234,23 +139,11 @@ void rollersStop() {
   rollersBottom.move_voltage(0);
 }
 
-void rollTop(){
+void rollTop() { rollersTop.move_voltage(12000); }
 
-}
-
-void poop(){
+void poop() {
   rollersTop.move_voltage(-12000);
   rollersBottom.move_voltage(12000);
-}
-
-void delayRoll(){
-  resetRollersEncoders();
-
-  while(rollersTop.get_position() < 1000){
-    rollTop();
-  }
-
-  roll();
 }
 
 double avgRollerEncoder() {

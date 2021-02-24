@@ -49,22 +49,22 @@ void autonomous() {
   if (selector::auton == 1) {
     pros::lcd::initialize();
     inertial.reset();
-    //forwardPID(2000);
-    forwardPD(800);
     //rotateDegreesPD(90);
-    delaySeconds(0.3);
-    //rotateDegreesPD(180);
+    skills126();
   }
 
   // selector::auton == 2 : Red Right
   if (selector::auton == 2) {
+    rightHomeRow();
   }
 
-  // selector::auton == 3 : Do Nothing
+  // selector::auton == 3 : Red Custom
   if (selector::auton == 3) {
-  }
+    inertial.reset();
+    rotateDegreesPD(260);
+    }
 
-  // selector::auton == 4 : Red Custom
+  // selector::auton == 4 : Do Nothing
   if (selector::auton == 4) {
     pros::lcd::initialize();
   //  intakePositioning(800, 0.1, 2, 0.4, 30);
@@ -92,7 +92,7 @@ void autonomous() {
   // selector::auton == 0 : Skills
   if (selector::auton == 0) {
     intakeSetHold();
-    skills();
+    skills126();
   }
 }
 

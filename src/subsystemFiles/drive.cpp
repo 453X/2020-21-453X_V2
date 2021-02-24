@@ -107,7 +107,7 @@ void rotateDegrees(double deg) {
 }
 
 void rotateDegreesPD(double deg) {
-  double tolerance = 0.5;
+  double tolerance = 4;
   double bias = 0;
 
   double error = 0;
@@ -117,7 +117,7 @@ void rotateDegreesPD(double deg) {
   double kP = 3.2;
   double kD = 2;
 
-  if(deg >= 180){
+  if (deg >= 180) {
     deg -= 2;
   } else {
     deg += 3;
@@ -167,14 +167,13 @@ void rotateDegreesPD(double deg) {
       double pow = 0;
       if (turnRigh == false) {
         // turn A(error) Left
-         pow = -error * kP - derivative * kD;
-         //pow = -20 + error / -2;
+        pow = -error * kP - derivative * kD;
+        // pow = -20 + error / -2;
 
       } else {
         // turn B(error) right
-        //pow = 20 + error / 2;
+        // pow = 20 + error / 2;
         pow = error * kP + derivative * kD;
-
       }
       turn(pow);
       pros::lcd::print(2, "TURN  >> %5.2f", pow);
@@ -192,6 +191,16 @@ void rotateDegreesPD(double deg) {
   }
 }
 
+void forwardAccel(int constant, int pd) {
+  forwardAcceleration(2);
+  forwardPD(pd);
+}
+
+void maneuverAccel(int forward, int straft, int turn, int constant, int pd) {
+  maneuverAcceleration(forward, straft, turn, constant);
+  maneuverPD(forward, straft, turn, pd);
+}
+
 void forwardPD(int units) { // power in positive, units in positive or negative
   resetDriveEncoders();
   int direction = abs(units) / units;
@@ -199,7 +208,7 @@ void forwardPD(int units) { // power in positive, units in positive or negative
   int power = 0;
   int setPoint = abs(units);
 
-  double kP = 0.3;
+  double kP = 0.1;
   double kD = 0.2;
 
   while (avgDriveEncoders() < abs(units)) {
@@ -210,7 +219,7 @@ void forwardPD(int units) { // power in positive, units in positive or negative
     double prevError = 0;
     double derivative;
 
-    power = direction*(error*kP + derivative*kD);
+    power = direction * (error * kP + derivative * kD);
 
     // pros::lcd::print(0, "Get encoder  >> %f\n",
     // fabs(driveLF.get_position()));
@@ -241,9 +250,173 @@ void forwardPD(int units) { // power in positive, units in positive or negative
     }
 
     pros::delay(10);
-
   }
   stop(0);
+}
+
+void straftPD(int units) { // power in positive, units in positive or negative
+  resetDriveEncoders();
+  int direction = abs(units) / units;
+  double rotation = inertial.get_rotation();
+  int power = 0;
+  int setPoint = abs(units);
+
+  double kP = 0.1;
+  double kD = 0.2;
+
+  while (avgDriveEncoders() < abs(units)) {
+    int tune = power * 0.3;
+    double tolerance = 0.3;
+
+    double error = setPoint - avgDriveEncoders();
+    double prevError = 0;
+    double derivative;
+
+    power = direction * (error * kP + derivative * kD);
+
+    // pros::lcd::print(0, "Get encoder  >> %f\n",
+    // fabs(driveLF.get_position()));
+    pros::lcd::print(0, "rotation  >> %5.2f", inertial.get_rotation());
+    pros::lcd::print(1, "encoder value  >> %5.2f", avgDriveEncoders());
+    pros::lcd::print(2, "error   >> %5.2f", error);
+
+    derivative = error - prevError;
+    prevError = error;
+
+    if (inertial.get_rotation() > rotation + tolerance) {
+      driveLF.move(power - tune);
+      driveLB.move(-power - tune);
+      driveRF.move(power - tune);
+      driveRB.move(-power - tune);
+
+    } else if (inertial.get_rotation() < rotation - tolerance) {
+      driveLF.move(power + tune);
+      driveLB.move(-power + tune);
+      driveRF.move(power + tune);
+      driveRB.move(-power + tune);
+
+    } else {
+      driveLF.move(power);
+      driveLB.move(-power);
+      driveRF.move(power);
+      driveRB.move(-power);
+    }
+
+    pros::delay(10);
+  }
+  stop(0);
+}
+
+void straftAccel(int constant, int pd) {
+  straftAcceleration(constant);
+  straftPD(pd);
+}
+
+void straftAcceleration(double constant) {
+  double timer = 0;
+  double rotation = inertial.get_rotation();
+
+  double tolerance = 0.3;
+
+  while (true) {
+    double tune = timer * 0.1;
+
+    if (constant >= 0) {
+      if (timer >= 127) {
+        break;
+      } else {
+        straft(timer);
+
+        if (inertial.get_rotation() > rotation + tolerance) {
+          driveLF.move(timer - tune);
+          driveLB.move(-timer - tune);
+          driveRF.move(timer - tune);
+          driveRB.move(-timer - tune);
+
+        } else if (inertial.get_rotation() < rotation - tolerance) {
+          driveLF.move(timer + tune);
+          driveLB.move(-timer + tune);
+          driveRF.move(timer + tune);
+          driveRB.move(-timer + tune);
+
+        } else {
+          driveLF.move(timer);
+          driveLB.move(-timer);
+          driveRF.move(timer);
+          driveRB.move(-timer);
+        }
+
+        timer += constant * 0.001;
+        pros::lcd::print(2, "timer --> %lf", timer);
+      }
+    } else {
+      if (timer <= -127) {
+        break;
+      } else {
+        straft(timer);
+        timer += constant * 0.001;
+        pros::lcd::print(2, "timer --> %lf", timer);
+      }
+    }
+  }
+}
+
+void forwardAcceleration(double constant) {
+  double timer = 0;
+
+  while (true) {
+    if (constant >= 0) {
+      if (timer >= 127) {
+        break;
+      } else {
+        forward(timer);
+        timer += constant * 0.001;
+        pros::lcd::print(2, "timer --> %lf", timer);
+      }
+    } else {
+      if (timer <= -127) {
+        break;
+      } else {
+        forward(timer);
+        timer += constant * 0.001;
+        pros::lcd::print(2, "timer --> %lf", timer);
+      }
+    }
+  }
+}
+
+void backwardAcceleration(double constant) {
+  double timer = 0;
+
+  while (true) {
+    if (timer >= -127) {
+      break;
+    } else {
+      forward(timer);
+      timer -= constant * 0.001;
+      pros::lcd::print(2, "timer --> %lf", timer);
+    }
+  }
+}
+
+void maneuverAcceleration(int forward, int straft, int turn, double constant) {
+  int timer = 0;
+  double forward2 = 0;
+  double straft2 = 0;
+  double turn2 = 0;
+
+  while (true) {
+    if (timer >= 127) {
+      break;
+    } else {
+      forward2 = timer * (forward * 0.01);
+      straft2 = timer * (straft * 0.01);
+      turn2 = timer * (turn * 0.01);
+
+      maneuver(forward2, straft2, turn2);
+      timer = timer + constant;
+    }
+  }
 }
 
 void distancePD(int setPoint) {
@@ -255,24 +428,23 @@ void distancePD(int setPoint) {
 
   double power = 0;
 
-  int tune = 10;
-  double tolerance = 0.3;
+  int tune = 0;
+  double tolerance = 10;
 
   double c = 1;
 
   double kP = 0.5;
   double kD = 0.5;
 
-  double dist =  distance.get();
+  double dist = distance.get();
   double error = dist - setPoint;
   double prevError = 0;
   double derivative;
 
-  while (true) {
+  while (error >= tolerance) {
     dist = distance.get();
     pros::lcd::print(1, "error   >> %5.2f", error);
-    pros::lcd::print(2, "distance   >> %5.2f",  dist );
-
+    pros::lcd::print(2, "distance   >> %5.2f", dist);
 
     // Proportional
     error = dist - setPoint;
@@ -280,9 +452,11 @@ void distancePD(int setPoint) {
     // Derivative
     derivative = prevError - error;
 
-    power = c*(error * kP + derivative * kD) * direction;
+    power = c * (error * kP + derivative * kD) * direction;
 
     prevError = error;
+
+    tune = power * 0.2;
 
     if (inertial.get_rotation() > rotation + tolerance) {
       forward(power - tune);
@@ -295,11 +469,79 @@ void distancePD(int setPoint) {
     }
 
     pros::delay(15);
-
-
   }
 
   stop();
+}
+
+void maneuverPD(int forward, int straft, int turn, int units) {
+  resetDriveEncoders();
+  int direction = abs(units) / units;
+  double rotation = inertial.get_rotation();
+  double power = 0;
+
+  double kP = 0.6;
+  double kD = 0.3;
+
+  double error = 0;
+  double derivative;
+  double prevError = 0;
+
+  double avgEncoder = avgDriveEncoders();
+  while (avgEncoder < abs(units)) {
+
+    int tune = 0;
+    double tolerance = 0.3;
+
+    error = abs(units) - avgEncoder;
+
+    power = error * kP + derivative * kD;
+
+    if (power >= 127) {
+      power = 127;
+    } else if (power < 40) {
+      power = 40;
+    }
+
+    tune = power * 0.1;
+    // pros::lcd::print(0, "Get encoder  >> %f\n",
+    // fabs(driveLF.get_position()));
+    pros::lcd::print(0, "rotation  >> %5.2f", inertial.get_rotation());
+    pros::lcd::print(1, "encoder value  >> %5.2f", avgEncoder);
+    pros::lcd::print(2, "error   >> %5.2f", error);
+    pros::lcd::print(3, "power   >> %5.2f", power);
+
+    derivative = error - prevError;
+    prevError = error;
+
+    double total = fabs(forward) + fabs(straft);
+    forward = power * forward/total;
+    straft = power * straft/total;
+    //turn = power * (turn * 0.01);
+
+    if (inertial.get_rotation() > rotation + tolerance) {
+      driveLF.move(forward + straft + turn - tune);
+      driveLB.move(forward - straft + turn - tune);
+      driveRF.move(-forward + straft + turn - tune);
+      driveRB.move(-forward - straft + turn - tune);
+
+    } else if (inertial.get_rotation() < rotation - tolerance) {
+      driveLF.move(forward + straft + turn + tune);
+      driveLB.move(forward - straft + turn + tune);
+      driveRF.move(-forward + straft + turn + tune);
+      driveRB.move(-forward - straft + turn + tune);
+
+    } else {
+      driveLF.move(forward + straft + turn);
+      driveLB.move(forward - straft + turn);
+      driveRF.move(-forward + straft + turn);
+      driveRB.move(-forward - straft + turn);
+    }
+
+    pros::delay(15);
+    avgEncoder = avgDriveEncoders();
+  }
+  stop(0);
 }
 
 void calibrate() {
@@ -388,7 +630,7 @@ void maneuverForward(int forward, int straft, int units) {
 
     pros::delay(10);
   }
-  stop(0);
+  stop();
 }
 
 void forward(int power) {
@@ -409,9 +651,9 @@ void forward(int power,
     int tune = 5;
     double tolerance = 0.3;
 
-    if (avgDriveEncoders() > abs(units) * 0.7) {
-      power = 50 * direction;
-    }
+    // if (avgDriveEncoders() > abs(units) * 0.7) {
+    //   power = 50 * direction;
+    // }
 
     // pros::lcd::print(0, "Get encoder  >> %f\n",
     // fabs(driveLF.get_position()));
@@ -438,7 +680,6 @@ void forward(int power,
 
     pros::delay(10);
   }
-  stop(0);
 }
 
 void forwardDistance(int power, int mm) {
@@ -519,7 +760,6 @@ void straft(int power,
 
     pros::delay(10);
   }
-  stop(0);
 }
 
 void stop() {

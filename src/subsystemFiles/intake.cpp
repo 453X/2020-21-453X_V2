@@ -36,6 +36,7 @@ void outtake(){
   intakeRight.move_voltage(12000);
   pros::delay(10);
 }
+
 void intakeStop() {
   intakeLeft.move_voltage(0);
   intakeRight.move_voltage(0);
@@ -60,5 +61,23 @@ void intakePositioning(int units, double seconds, double rTotalTime , int loop, 
   stop();
   //rollMove(loop, rSeconds, power);
   rollMove2(loop, rTotalTime, rSeconds,power) ;
+  intakeStop();
+}
+
+void goalPositioning(int forwardUnits, double seconds, int balls, double rollSeconds){
+  intake();
+  forward(90, forwardUnits);
+  forwardSeconds(90, seconds);
+  forwardSeconds(-80, 0.3);
+
+  for(int i = 0; i < balls - 1; i++){
+    intake();
+    roll();
+    delaySeconds(rollSeconds);
+    outtake();
+    delaySeconds(0.2);
+  }
+
+  rollersStop();
   intakeStop();
 }
