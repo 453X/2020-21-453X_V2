@@ -454,6 +454,12 @@ void distancePD(int setPoint) {
 
     power = c * (error * kP + derivative * kD) * direction;
 
+    if (power >= 127) {
+      power = 127;
+    } else if (power < 40) {
+      power = 40;
+    }
+
     prevError = error;
 
     tune = power * 0.2;
@@ -466,6 +472,61 @@ void distancePD(int setPoint) {
 
     } else {
       forward(power);
+    }
+
+    pros::delay(15);
+  }
+
+  stop();
+}
+
+void distance2PD(int setPoint) {
+  resetDriveEncoders();
+  driveSetHold();
+
+  int direction = abs(setPoint) / setPoint;
+  double rotation = inertial.get_rotation();
+
+  double power = 0;
+
+  int tune = 0;
+  double tolerance = 10;
+
+  double c = 1;
+
+  double kP = 0.5;
+  double kD = 0.5;
+
+  double dist = distance2.get();
+  double error = dist - setPoint;
+  double prevError = 0;
+  double derivative;
+
+  while (error >= tolerance) {
+    dist = distance2.get();
+    pros::lcd::print(1, "error   >> %5.2f", error);
+    pros::lcd::print(2, "distance   >> %5.2f", dist);
+
+    // Proportional
+    error = dist - setPoint;
+
+    // Derivative
+    derivative = prevError - error;
+
+    power = c * (error * kP + derivative * kD) * direction;
+
+    prevError = error;
+
+    tune = power * 0.2;
+
+    if (inertial.get_rotation() > rotation + tolerance) {
+      straft(-power - tune);
+
+    } else if (inertial.get_rotation() < rotation - tolerance) {
+      straft(-power + tune);
+
+    } else {
+      straft(-power);
     }
 
     pros::delay(15);
@@ -499,8 +560,8 @@ void maneuverPD(int forward, int straft, int turn, int units) {
 
     if (power >= 127) {
       power = 127;
-    } else if (power < 40) {
-      power = 40;
+    } else if (power < 50) {
+      power = 50;
     }
 
     tune = power * 0.1;

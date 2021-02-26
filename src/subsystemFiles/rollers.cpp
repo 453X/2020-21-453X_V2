@@ -5,30 +5,38 @@ void rollersControl() {
   bool buttonL2 = controller.get_digital(DIGITAL_L2);
   bool buttonY = controller.get_digital(DIGITAL_Y);
   bool buttonUp = controller.get_digital(DIGITAL_UP);
+  bool buttonLeft = controller.get_digital(DIGITAL_LEFT);
+  bool buttonRight = controller.get_digital(DIGITAL_RIGHT);
   bool buttonDown = controller.get_digital(DIGITAL_DOWN);
 
-  optical.set_led_pwm(50);
+  optical.set_led_pwm(100);
 
   int timer = 0;
   if (buttonY) {
 
     // delay roll
-      if (timer >= 300) {
-        roll();
+      // if (timer >= 300) {
+      //   roll();
+      //
+      // } else {
+      //   rollTop();
+      //   timer += 20;
+      //   pros::lcd::print(2, "timer --> %lf", timer);
+      // }
 
-      } else {
-        rollTop();
-        timer += 20;
-        pros::lcd::print(2, "timer --> %lf", timer);
-      }
+      roll();
 
   } else if (buttonL2) {
-    roll(-12000);
+    poop();
   } else if (buttonL1) {
     rollBottom();
   } else if (buttonUp) {
     roll();
   } else if (buttonDown) {
+    roll(-12000);
+  } else if (buttonLeft) {
+    poop();
+  } else if (buttonRight) {
     poop();
   } else {
     roll(0);

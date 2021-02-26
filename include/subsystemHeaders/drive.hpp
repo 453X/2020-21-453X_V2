@@ -14,6 +14,7 @@ void forwardPD(int units);
 void straftPD(int units);
 void maneuverPD(int forward, int straft, int turn, int units);
 void distancePD(int setPoint);
+void distance2PD(int setPoint);
 
 void forwardAcceleration(double constant);
 void straftAcceleration(double constant);

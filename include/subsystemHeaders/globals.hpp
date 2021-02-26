@@ -12,6 +12,7 @@ extern pros::Motor driveRB;
 //sensors
 extern pros::Imu inertial;
 extern pros::Distance distance;
+extern pros::Distance distance2;
 extern pros::Optical optical;
 
 //controller

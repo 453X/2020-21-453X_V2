@@ -49,8 +49,12 @@ void autonomous() {
   if (selector::auton == 1) {
     pros::lcd::initialize();
     inertial.reset();
-    //rotateDegreesPD(90);
+    //rotateDegreesPD(270);
     skills126();
+    // delaySeconds(2);
+    // fourthGoal();
+    //distance2PD(750);
+
   }
 
   // selector::auton == 2 : Red Right

@@ -219,7 +219,7 @@ void secondGoal(){
 }
 
 void thirdGoal(){
-  rotateDegreesPD(75);
+  rotateDegreesPD(80);
   outtake();
   roll(-12000);
   forward(120, -2600);
@@ -227,11 +227,12 @@ void thirdGoal(){
   rollersStop();
   rollBottom();
   forwardPD(-1600);
-  rollersStop();
   intakeStop();
   rotateDegreesPD(357);
   stop();
-  intakePositioning(2300, 0.3, 0.8, 2, 0.3, 20);
+  forward(80, 600);
+  rollersStop();
+  intakePositioning(1300, 0.3, 0.9, 2, 0.3, 20);
   stop();
 }
 
@@ -243,13 +244,15 @@ void fourthGoal(){
   stop(0.4);
   rotateDegreesPD(357);
   straft(100, -300);
-  maneuverPD(0, -127, 0, 1700);
+  maneuverPD(0, -127, 0, 2000);
+  //straft(100, -1500);
+  distance2PD(750);
   stop();
   intake();
-  distancePD(300);
+  distancePD(270);
   rollersStop();
   rollBottom();
-  maneuverPD(-100, -80, 0, 1400);
+  maneuverPD(-100, -65, 0, 1400);
   rotateDegreesPD(315);
   stop();
   maneuverPD(70, 35, 0, 1100);
@@ -261,7 +264,7 @@ void fourthGoal(){
 }
 
 void fifthGoal(){
-  rotateDegreesPD(335);
+  rotateDegreesPD(350);
   outtake();
   roll(-12000);
   forward(120, -2500);
@@ -269,7 +272,7 @@ void fifthGoal(){
   rollersStop();
   rollBottom();
   intakeStop();
-  forwardPD(-1500);
+  forwardPD(-1800);
   intakeStop();
   rotateDegreesPD(270);
   rollersStop();
@@ -334,7 +337,7 @@ void seventhGoal(){
   rollersStop();
   intakeStop();
   stop();
-  intakePositioning(2300, 0.3, 0.6, 2, 0.3, 20);
+  intakePositioning(2300, 0.3, 0.7, 2, 0.3, 20);
   stop();
 }
 
@@ -347,7 +350,9 @@ void eighthGoal(){
   rotateDegreesPD(180);
   rollersStop();
   straft(100, -300);
-  maneuverPD(0, -127, 0, 2000);
+  maneuverPD(0, -127, 0, 1900);
+  // straft(100, -1500);
+  distance2PD(750);
   stop();
   intake();
   distancePD(300);
@@ -355,9 +360,9 @@ void eighthGoal(){
   rollBottom();
   maneuverPD(-95, -65, 0, 1300);
   rotateDegreesPD(135);
-  rollersStop();
   stop();
   maneuverPD(70, 25, 0, 1100);
+  rollersStop();
   intakePositioning(0, 0.3, 0.5, 2, 0.25, 20);
   //forwardPD(-500);
   stop();
@@ -373,7 +378,7 @@ void descoreCenter(int balls){
 }
 
 void centerGoal(){
-  rotateDegreesPD(170);
+  rotateDegreesPD(160);
   roll();
   intake();
   forward(120, -2000);
@@ -382,10 +387,10 @@ void centerGoal(){
   rollBottom();
   forwardPD(-2500);
   rotateDegreesPD(272);
-  forwardSeconds(110, 0.7);
-  forwardSeconds(-110, 0.4);
+  forwardSeconds(110, 1);
+  forwardSeconds(-110, 0.6);
 
-  descoreCenter(2);
+  descoreCenter(3);
   outtake();
   maneuver(90, 0, -20, 0.7);
   roll();

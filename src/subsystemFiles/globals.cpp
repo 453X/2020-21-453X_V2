@@ -13,7 +13,8 @@ pros::Motor intakeRight(8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODE
 //sensors
 pros::Imu inertial (11);
 pros::Distance distance (12);
-pros::Optical optical (13);
+pros::Distance distance2 (13);
+pros::Optical optical (14);
 
 //controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
